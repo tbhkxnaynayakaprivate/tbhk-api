@@ -117,35 +117,35 @@ router.post('/signup', recaptcha.middleware.verify, captchaRegister, async(req, 
     }
 
     if (!email || !username || !password || !confirmpassword) {
-        req.flash('error_messages','All Fields Required !');
+        req.flash('error_messages','Semua bidang wajib di isi');
         res.redirect('/signup');
     } else if (password != confirmpassword) {
-        req.flash('error_messages',"Password Don't Match !");
+        req.flash('error_messages',"Kata Sandi tidak cocok");
         res.redirect('/signup');
-    } else if(!checkpw ) {
-        req.flash('error_messages',"Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters,no emoji and no Space Limit 30 text");
+    } else if(!checkpw) {
+        req.flash('error_messages',"Kata Sandi harus mengandung setidaknya satu angka dan satu huruf besar dan kecil, dan setidaknya 8 karakter atau lebih, tidak ada emoji dan tidak ada batas spasi 30 teks");
         res.redirect('/signup');  
     } else if (containsEmoji(password)) {
-        req.flash('error_messages',"Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters,no emoji and no Space Limit 30 text");
+        req.flash('error_messages',"Kata Sandi harus mengandung setidaknya satu angka dan satu huruf besar dan kecil, dan setidaknya 8 karakter atau lebih, tidak ada emoji dan tidak ada batas spasi 30 teks");
         res.redirect('/signup');  
     } else if(username.length < 4) {
-        req.flash('error_messages',"Username harus minimal 4 karakter");
+        req.flash('error_messages',"Username harus terdiri minimal 4 karakter");
         res.redirect('/signup');
     } else if(username.length > 20) {
-        req.flash('error_messages',"Limit Username tidak boleh lebih 20 karakter");
+        req.flash('error_messages',"Limit Username tidak boleh lebih dari 20 karakter");
         res.redirect('/signup');
     } else if (containsEmoji(username)) {
-        req.flash('error_messages',"Username Tidak boleh guna emoji");
+        req.flash('error_messages',"Username Tidak boleh menggunakan emoji");
         res.redirect('/signup');  
     }else if(!checkemail){
-        req.flash('error_messages',"Sorry kami terima Account Gmail Sahaja");
+        req.flash('error_messages',"Maaf, kami hanya menerima akun gmail bukan provider email lain!");
         res.redirect('/signup');  
     }else{
 
         user.findOne({ $or: [{ email: email }, { username: username }] }, function (err, data) {
             if (err) throw err;
             if (data) {
-                req.flash('error_messages',"User Exists, Try Logging In !");
+                req.flash('error_messages',"Akun telah terdaftar sebelumnya, Silakan coba kembali.");
                 res.redirect('/signup');
             } else {
                 bcryptjs.genSalt(12, (err, salt) => {
@@ -161,7 +161,7 @@ router.post('/signup', recaptcha.middleware.verify, captchaRegister, async(req, 
 
                         }).save((err, data) => {
                             if (err) throw err;
-                            req.flash('success_messages',"Account Succes Create Sila Login");
+                            req.flash('success_messages',"Selamat, akun anda berhasil dibuat. Silakan login untuk melanjutkan");
                             res.redirect('/login');
                         });
                     })
@@ -177,17 +177,17 @@ router.get('/send-verification-email', checkAuth, async (req, res) => {
         res.redirect('/docs');
     } else {
         if (check) {
-        req.flash('error_messages', 'Please Dont Spam Wait After 30 minit.')
+        req.flash('error_messages', 'Mohon jangan spam. Silakan coba lagi setelah 30 menit.')
         res.redirect('/docs');
         }else{
          var token = crypto.randomBytes(32).toString('hex');
         await VerifyUser({ token: token, email: req.user.email }).save();
         var mail =await mailer.sendVerifyEmail(req.user.email, token)
         if(mail == 'error'){
-            req.flash('error_messages','Error Please Try Again Tomorrow');
+            req.flash('error_messages','Terjadi kesalahan, silakan coba lagi besok.');
             res.redirect('/docs');
         }else{
-        req.flash('success_messages', 'Done Sent Email Link Expired After 30 mnit.')
+        req.flash('success_messages', 'Verifikasi email telah dikirim ke akun anda. Verifikasi akan kedaluarsa selama 30 menit.')
         res.redirect('/docs');
         }
 
@@ -210,7 +210,7 @@ router.get('/verifyemail', async (req, res) => {
             if (req.user) {
             res.redirect("docs");
         }else{
-            req.flash('error_messages', 'Link Expired Or Error')
+            req.flash('error_messages', 'Verifikasi telah kedaluarsa atau terjadi kesalahan')
             res.redirect('/login');
         }
     }
@@ -218,7 +218,7 @@ router.get('/verifyemail', async (req, res) => {
         if (req.user) {
             res.redirect("docs");
         }else{
-            req.flash('error_messages', 'Token Missing')
+            req.flash('error_messages', 'Token tidak tersedia. Silakan coba lagi nanti')
             res.redirect('/login');
         }
     }
@@ -236,7 +236,7 @@ router.post('/forgot-password', recaptcha.middleware.verify, captchaForgotPasswo
     const { email } = req.body;
 
 	if (!email ) {
-        req.flash('error_messages','All Fields Required !');
+        req.flash('error_messages','Semua bidang wajib di isi');
         res.redirect('/forgot-password');
     }
     var userData = await user.findOne({ email: email });
@@ -244,24 +244,24 @@ router.post('/forgot-password', recaptcha.middleware.verify, captchaForgotPasswo
 
 if (userData) {
 if (Cooldown) {
-    req.flash('error_messages','Please Dont Spam Wait After 30 minit after new submit.');
+    req.flash('error_messages','Mohon jangan spam, silakan tunggu 30 menit setelah meminta kata sandi yang baru.');
     res.redirect('/forgot-password')
             
  }else{
             var token = crypto.randomBytes(32).toString('hex');
             var mail = await mailer.sendResetEmail(email, token)
             if(mail == 'error'){
-                req.flash('error_messages','Error Please Try Again Tomorrow');
+                req.flash('error_messages','Terjadi kesalahan, silakan coba lagi besok');
                 res.redirect('/forgot-password');
             }else{
              await resetToken({ token: token, email: email }).save();
-            req.flash('success_messages','Check your email for more info, wait 30 minit after new submit.');
+            req.flash('success_messages','Reset kata sandi berhasil dikirim ke akun gmail anda, silakan periksa dan tunggu 30 menit jika ingin meminta reset kata sandi yang baru.');
             res.redirect('/forgot-password');    
             }
            
  }
     } else {
-        req.flash('error_messages','No user Exists with this email');
+        req.flash('error_messages','Tidak ada pengguna yang memiliki email ini');
         res.redirect('/forgot-password');
     }
 });
@@ -280,7 +280,7 @@ router.get('/reset-password', recaptcha.middleware.render, async (req, res) => {
                 token: token
              });
         } else {
-            req.flash('error_messages','Token Tampered or Expired.');
+            req.flash('error_messages','Token kedaluarsa atau terjadi kesalahan.');
             res.redirect('/forgot-password');
         }
     } else {
@@ -305,10 +305,10 @@ resetpw
 var checkpw = resetpw.validate(password)
 
     if (!password || !confirmpassword || confirmpassword != password) {
-        req.flash('error_messages',"Passwords Don't Match !");
+        req.flash('error_messages',"Kata Sandi tidak cocok");
         res.redirect(`/reset-password?token=${token}`);
     } else if(!checkpw) {
-        req.flash('error_messages',"Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters,no emoji and no Space Limit 30 text");
+        req.flash('error_messages',"Kata Sandi harus mengandung setidaknya satu angka dan satu huruf besar dan kecil, dan setidaknya 8 karakter atau lebih, tidak ada emoji dan tidak ada batas spasi 30 teks");
         res.redirect(`/reset-password?token=${token}`);
     } else {
         var salt = await bcryptjs.genSalt(12);
@@ -316,10 +316,10 @@ var checkpw = resetpw.validate(password)
             var hash = await bcryptjs.hash(password, salt);
             await user.findOneAndUpdate({ email: email }, { $set: { password: hash } });
             await resetToken.findOneAndDelete({ token: token });
-            req.flash('success_messages', 'Password Has Change')
+            req.flash('success_messages', 'Kata Sandi berhasil direset. Silakan login menggunakan kata sandi yang baru')
             res.redirect('/login');
         } else {
-        req.flash('error_messages',"Unexpected Error Try Again");
+        req.flash('error_messages',"Kesalahan tak terduga, silakan coba lagi nanti");
         res.redirect(`/reset-password?token=${token}`);
         }
     }
