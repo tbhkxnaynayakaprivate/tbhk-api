@@ -51,15 +51,15 @@ const router = express.Router()
 
 async function cekKey(req, res, next) {
 	var apikey = req.query.apikey
-	if (!apikey ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter apikey"})  
+	if (!apikey ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter apikey"})  
 
     let db = await User.findOne({apikey: apikey});
     if(db === null) {
-		return res.json({ status : false, creator : `${creator}`, message : "[!] Apikey Tidak Wujud"})  
+		return res.json({ status : false, creator : `${creator}`, message : "[!] Apikey Tidak Valid"})  
 		} else if(!db.isVerified) {
-				return res.json({ status : false, creator : `${creator}`, message : "[!] Sila Verify Email dulu sebelum guna apikey"})  
+				return res.json({ status : false, creator : `${creator}`, message : "[!] Silakan Verifikasi Email Sebelum Memakai Apikey"})  
 			} else if(db.limitApikey === 0) {
-				return res.json({ status : false, creator : `${creator}`, message : "[!] Apikey Sudah Habis"})  
+				return res.json({ status : false, creator : `${creator}`, message : "[!] Limit Apikey Sudah Habis"})  
 			}else{
         return next();
     }
@@ -77,7 +77,7 @@ async function limitapikey(apikey) {
 
 router.get('/api/dowloader/fbdown', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})  
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})  
 alip.fbdown(url).then(data => {
 	if (!data.Normal_video ) return res.json(loghandler.noturl)
 	limitapikey(req.query.apikey)
@@ -94,7 +94,7 @@ alip.fbdown(url).then(data => {
 
 router.get('/api/dowloader/twitter', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 	
 alip.twitter(url).then(data => {
 if (!data.video ) return res.json(loghandler.noturl)
@@ -112,7 +112,7 @@ res.json(loghandler.error)
 
 router.get('/api/dowloader/tikok', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})  
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})  
 
 alip.musically(url).then(data => {
     if (!data) return res.json(loghandler.noturl)
@@ -130,7 +130,7 @@ alip.musically(url).then(data => {
 
 router.get('/api/dowloader/igstorydowloader', cekKey, async (req, res, next) => {
 	var username = req.query.username
-	if (!username ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter username"})   
+	if (!username ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter username"})   
 
 	alip.igstory(username).then(async (data) => {
 		if (!data) return res.json(loghandler.instgram) 
@@ -146,7 +146,7 @@ router.get('/api/dowloader/igstorydowloader', cekKey, async (req, res, next) => 
 
 router.get('/api/dowloader/igdowloader', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 	if (!/^((https|http)?:\/\/(?:www\.)?instagram\.com\/(p|tv|reel|stories)\/([^/?#&]+)).*/i.test(url)) return res.json(loghandler.noturl)
 
 	alip.igdl(url).then(async (data) => {
@@ -165,7 +165,7 @@ router.get('/api/dowloader/igdowloader', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/yt', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"}) 
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"}) 
 
 	var mp3 = await ytMp3(url)
 	var mp4 = await ytMp4(url)
@@ -196,7 +196,7 @@ router.get('/api/dowloader/yt', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/soundcloud', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 	
 	alip.soundcloud(url).then(data => {
 		if (!data.download ) return res.json(loghandler.noturl)
@@ -213,7 +213,7 @@ router.get('/api/dowloader/soundcloud', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/mediafire', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 
 	alip.mediafiredl(url).then(async (data) => {
 		if (!data ) return res.json(loghandler.noturl)
@@ -230,7 +230,7 @@ router.get('/api/dowloader/mediafire', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/sfilemobi', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 
 	alip.sfilemobi(url).then(async (data) => {
 		if (!data ) return res.json(loghandler.noturl)
@@ -247,7 +247,7 @@ router.get('/api/dowloader/sfilemobi', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/zippyshare', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 
 	alip.zippyshare(url).then(async (data) => {
 		if (!data ) return res.json(loghandler.noturl)
@@ -264,7 +264,7 @@ router.get('/api/dowloader/zippyshare', cekKey, async (req, res, next) => {
 
 router.get('/api/dowloader/telesticker', cekKey, async (req, res, next) => {
 	var url = req.query.url
-	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})   
+	if (!url ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})   
 	if (!url.match(/(https:\/\/t.me\/addstickers\/)/gi)) return res.json(loghandler.noturl)
 	
 	alip.telesticker(url).then(data => {
@@ -284,7 +284,7 @@ router.get('/api/dowloader/telesticker', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/pencil', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-a-sketch-text-effect-online-1044.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -299,7 +299,7 @@ router.get('/api/textpro/pencil', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/glitch', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-impressive-glitch-text-effects-online-1027.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -314,7 +314,7 @@ router.get('/api/textpro/glitch', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/blackpink', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-blackpink-logo-style-online-1001.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -329,7 +329,7 @@ router.get('/api/textpro/blackpink', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/berry', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-berry-text-effect-online-free-1033.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -344,7 +344,7 @@ router.get('/api/textpro/berry', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/neon', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/neon-light-text-effect-online-882.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -360,7 +360,7 @@ router.get('/api/textpro/neon', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/logobear', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/online-black-and-white-bear-mascot-logo-creation-1012.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -375,7 +375,7 @@ router.get('/api/textpro/logobear', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/3dchristmas', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/3d-christmas-text-effect-by-name-1055.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -390,7 +390,7 @@ router.get('/api/textpro/3dchristmas', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/thunder', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/online-thunder-text-effect-generator-1031.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -405,7 +405,7 @@ router.get('/api/textpro/thunder', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/3dboxtext', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/3d-box-text-effect-online-880.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -421,8 +421,8 @@ router.get('/api/textpro/3dboxtext', cekKey, async (req, res, next) => {
 router.get('/api/textpro/glitch2', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var text2 = req.query.text2
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"}) 
 	alip.textpro("https://textpro.me/create-a-glitch-text-effect-online-free-1026.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -437,8 +437,8 @@ router.get('/api/textpro/glitch2', cekKey, async (req, res, next) => {
 router.get('/api/textpro/glitchtiktok', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var text2 = req.query.text2
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"}) 
 	alip.textpro("https://textpro.me/create-glitch-text-effect-style-tik-tok-983.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -453,8 +453,8 @@ router.get('/api/textpro/glitchtiktok', cekKey, async (req, res, next) => {
 router.get('/api/textpro/video-game-classic', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var text2 = req.query.text2
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"}) 
 	alip.textpro("https://textpro.me/video-game-classic-8-bit-text-effect-1037.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -469,8 +469,8 @@ router.get('/api/textpro/video-game-classic', cekKey, async (req, res, next) => 
 router.get('/api/textpro/marvel-studios', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var text2 = req.query.text2
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"}) 
 	alip.textpro("https://textpro.me/create-logo-style-marvel-studios-online-971.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -485,8 +485,8 @@ router.get('/api/textpro/marvel-studios', cekKey, async (req, res, next) => {
 router.get('/api/textpro/ninja-logo', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var text2 = req.query.text2
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"}) 
 	alip.textpro("https://textpro.me/create-ninja-logo-online-935.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -500,7 +500,7 @@ router.get('/api/textpro/ninja-logo', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/green-horror', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-green-horror-style-text-effect-online-1036.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -514,7 +514,7 @@ router.get('/api/textpro/green-horror', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/magma', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-a-magma-hot-text-effect-online-1030.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -528,7 +528,7 @@ router.get('/api/textpro/magma', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/3d-neon-light', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-3d-neon-light-text-effect-online-1028.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -542,7 +542,7 @@ router.get('/api/textpro/3d-neon-light', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/3d-orange-juice', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/create-a-3d-orange-juice-text-effect-online-1084.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -556,7 +556,7 @@ router.get('/api/textpro/3d-orange-juice', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/chocolate-cake', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/chocolate-cake-text-effect-890.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -570,7 +570,7 @@ router.get('/api/textpro/chocolate-cake', cekKey, async (req, res, next) => {
 
 router.get('/api/textpro/strawberry', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.textpro("https://textpro.me/strawberry-text-effect-online-889.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -587,7 +587,7 @@ router.get('/api/textpro/strawberry', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/flaming', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/realistic-flaming-text-effect-online-197.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -602,7 +602,7 @@ router.get('/api/photooxy/flaming', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/shadow-sky', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/shadow-text-effect-in-the-sky-394.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -617,7 +617,7 @@ router.get('/api/photooxy/shadow-sky', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/metallic', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/other-design/create-metallic-text-glow-online-188.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -632,7 +632,7 @@ router.get('/api/photooxy/metallic', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/naruto', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/manga-and-anime/make-naruto-banner-online-free-378.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -647,9 +647,9 @@ router.get('/api/photooxy/naruto', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/pubg', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	var text2 = req.query.text2
-	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text2"})  
+	if (!text2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text2"})  
 	alip.photooxy("https://photooxy.com/battlegrounds/make-wallpaper-battlegrounds-logo-text-146.html", [text1,text2])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -663,7 +663,7 @@ router.get('/api/photooxy/pubg', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/under-grass', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/make-quotes-under-grass-376.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -677,7 +677,7 @@ router.get('/api/photooxy/under-grass', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/harry-potter', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/create-harry-potter-text-on-horror-background-178.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -691,7 +691,7 @@ router.get('/api/photooxy/harry-potter', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/flower-typography', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/art-effects/flower-typography-text-effect-164.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -705,7 +705,7 @@ router.get('/api/photooxy/flower-typography', cekKey, async (req, res, next) => 
 
 router.get('/api/photooxy/picture-of-love', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/create-a-picture-of-love-message-377.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -719,7 +719,7 @@ router.get('/api/photooxy/picture-of-love', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/coffee-cup', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/put-any-text-in-to-coffee-cup-371.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -733,7 +733,7 @@ router.get('/api/photooxy/coffee-cup', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/butterfly', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/butterfly-text-with-reflection-effect-183.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -747,7 +747,7 @@ router.get('/api/photooxy/butterfly', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/night-sky', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/write-stars-text-on-the-night-sky-200.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -762,7 +762,7 @@ router.get('/api/photooxy/night-sky', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/carved-wood', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/carved-wood-effect-online-171.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -777,7 +777,7 @@ router.get('/api/photooxy/carved-wood', cekKey, async (req, res, next) => {
 
 router.get('/api/photooxy/illuminated-metallic', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/illuminated-metallic-effect-177.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -791,7 +791,7 @@ router.get('/api/photooxy/illuminated-metallic', cekKey, async (req, res, next) 
 
 router.get('/api/photooxy/sweet-candy', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.photooxy("https://photooxy.com/logo-and-text-effects/sweet-andy-text-online-168.html", [text1])
 .then((data) =>{ 
 	limitapikey(req.query.apikey)
@@ -810,8 +810,8 @@ router.get('/api/photooxy/sweet-candy', cekKey, async (req, res, next) => {
 router.get('/api/soundoftext', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
 	var lan = req.query.lang
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
-	if (!lan ) return res.json({ status : false, creator : `${creator}`, message : "[!] sila letak format lang dengan betul cek web site https://soundoftext.com/docs untuk lihat code lang"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
+	if (!lan ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input format bahasa dengan benar cek web site https://soundoftext.com/docs untuk melihat kode bahasa"})   
 
 textto.sounds.create({ text: text1, voice: lan })
 .then(soundUrl => {
@@ -832,7 +832,7 @@ textto.sounds.create({ text: text1, voice: lan })
 
 router.get('/api/search/linkgroupwa', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 alip.linkwa(text1).then((data) =>{ 
 	if (!data[0] ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -848,7 +848,7 @@ alip.linkwa(text1).then((data) =>{
 
 router.get('/api/search/pinterest', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 alip.pinterest(text1).then((data) =>{ 
 	if (!data[0] ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -865,7 +865,7 @@ alip.pinterest(text1).then((data) =>{
 
 router.get('/api/search/ringtone', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.ringtone(text1).then((data) =>{ 
 	if (!data ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -882,7 +882,7 @@ router.get('/api/search/ringtone', cekKey, async (req, res, next) => {
 
 router.get('/api/search/wikimedia', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 alip.wikimedia(text1).then((data) =>{ 
 	if (!data[0] ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -899,7 +899,7 @@ alip.wikimedia(text1).then((data) =>{
 
 router.get('/api/search/wallpaper', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.wallpaper(text1).then((data) =>{ 
 	if (!data[0] ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -915,7 +915,7 @@ router.get('/api/search/wallpaper', cekKey, async (req, res, next) => {
 
 router.get('/api/search/google', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 
 	googleIt({'query': text1}).then(results => {
 		if (!results[0] ) return res.json(loghandler.notfound)
@@ -932,7 +932,7 @@ router.get('/api/search/google', cekKey, async (req, res, next) => {
 
 router.get('/api/search/googleimage', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 
 	var gis = require('g-i-s')
 gis(text1, logResults)
@@ -956,7 +956,7 @@ function logResults(error, results) {
 
 router.get('/api/search/ytplay', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"}) 
 
 let yts = require("yt-search")
 let search = await yts(text1)
@@ -994,7 +994,7 @@ limitapikey(req.query.apikey)
 
 router.get('/api/search/sticker', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.stickersearch(text1).then(data => {
 		if (!data ) return res.json(loghandler.notfound)
 		limitapikey(req.query.apikey)
@@ -1010,7 +1010,7 @@ router.get('/api/search/sticker', cekKey, async (req, res, next) => {
 
 router.get('/api/search/sfilemobi', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})   
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})   
 	alip.sfilemobiSearch(text1).then(data => {
 		if (!data ) return res.json(loghandler.notfound)
 		limitapikey(req.query.apikey)
@@ -1160,7 +1160,7 @@ router.get('/api/game/tembakkimia', cekKey, async (req, res, next) => {
 
 router.get('/api/maker/circle', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 	const hasil =  await Canvacord.Canvas.circle(text);
@@ -1173,7 +1173,7 @@ router.get('/api/maker/circle', cekKey, async (req, res) => {
 
 router.get('/api/maker/beautiful', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 	const hasil =  await Canvacord.Canvas.beautiful(text);
@@ -1185,7 +1185,7 @@ router.get('/api/maker/beautiful', cekKey, async (req, res) => {
 
 router.get('/api/maker/blur', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 	const hasil =  await Canvacord.Canvas.blur(text)
@@ -1199,13 +1199,13 @@ router.get('/api/maker/blur', cekKey, async (req, res) => {
 router.get('/api/maker/darkness', cekKey, async (req, res) => {
 	var text = req.query.url
 	var no = req.query.no
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
-	if (!no ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter no"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
+	if (!no ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter no"})
 
 	var img = await isImageURL(text)
 	var n = isNumber(no)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
-	if ( !n ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter no nombor sahaja"}) 
+	if ( !n ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter no nombor saja"}) 
 
 	const hasil =  await Canvacord.Canvas.darkness(text,shortText(no, 3))
 	limitapikey(req.query.apikey)
@@ -1215,7 +1215,7 @@ router.get('/api/maker/darkness', cekKey, async (req, res) => {
 
 router.get('/api/maker/facepalm', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1228,7 +1228,7 @@ router.get('/api/maker/facepalm', cekKey, async (req, res) => {
 
 router.get('/api/maker/invert', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1242,13 +1242,13 @@ router.get('/api/maker/invert', cekKey, async (req, res) => {
 router.get('/api/maker/pixelate', cekKey, async (req, res) => {
 	var text = req.query.url
 	var no = req.query.no
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
-	if (!no ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter no"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
+	if (!no ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter no"})
 
 	var img = await isImageURL(text)
 	var n = isNumber(no)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
-	if ( !n ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter no nombor sahaja"}) 
+	if ( !n ) return res.json({ status : false, creator : 'Alip', message : "[!] input parameter nomor saja"}) 
 
 	const hasil =  await Canvacord.Canvas.pixelate(text,convertStringToNumber(no))
 	limitapikey(req.query.apikey)
@@ -1260,7 +1260,7 @@ router.get('/api/maker/pixelate', cekKey, async (req, res) => {
 
 router.get('/api/maker/rainbow', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1276,9 +1276,9 @@ router.get('/api/maker/resize', cekKey, async (req, res) => {
 	var width = req.query.width
 	var height = req.query.height
 
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
-	if (!width ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter width"})
-	if (!height ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter height"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
+	if (!width ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter width"})
+	if (!height ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter height"})
 
 	let w = width
 	let h = height
@@ -1289,8 +1289,8 @@ router.get('/api/maker/resize', cekKey, async (req, res) => {
 	var wid = isNumber(width)
 	var hei = isNumber(height)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
-	if ( !wid ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter width nombor sahaja"}) 
-	if ( !hei ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter height nombor sahaja"}) 
+	if ( !wid ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter width nombor saja"}) 
+	if ( !hei ) return res.json({ status : false, creator : 'Alip', message : "[!] parameter height nombor saja"}) 
 
 	const hasil =  await Canvacord.Canvas.resize(text, convertStringToNumber(w),  convertStringToNumber(h))
 	limitapikey(req.query.apikey)
@@ -1301,7 +1301,7 @@ router.get('/api/maker/resize', cekKey, async (req, res) => {
 
 router.get('/api/maker/trigger', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1314,7 +1314,7 @@ router.get('/api/maker/trigger', cekKey, async (req, res) => {
 
 router.get('/api/maker/wanted', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1327,7 +1327,7 @@ router.get('/api/maker/wanted', cekKey, async (req, res) => {
 
 router.get('/api/maker/wasted', cekKey, async (req, res) => {
 	var text = req.query.url
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url"})
 	var img = await isImageURL(text)
 	if ( !img ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image"}) 
 
@@ -1340,7 +1340,7 @@ router.get('/api/maker/wasted', cekKey, async (req, res) => {
 
 router.get('/api/maker/attp', cekKey, async (req, res) => {
 	var text = req.query.text
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})
 
 const file = "./asset/image/attp.gif"
 
@@ -1398,7 +1398,7 @@ res.send(buffer)
 
 router.get('/api/maker/ttp', cekKey, async (req, res) => {
 	var text = req.query.text
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})
 
 	Canvas.registerFont('./asset/font/SF-Pro.ttf', { family: 'SF-Pro' })
 	let length = text.length
@@ -1437,8 +1437,8 @@ router.get('/api/maker/ttp', cekKey, async (req, res) => {
 router.get('/api/maker/emojimix', cekKey, async (req, res, next) => {
 	var emoji1 = req.query.emoji1
 	var emoji2 = req.query.emoji2
-	if (!emoji1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter emoji1"})
-	if (!emoji2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter emoji2"})  
+	if (!emoji1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter emoji1"})
+	if (!emoji2 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter emoji2"})  
 	
 	let data = await fetchJson(`https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}`)
 	let jadi = data.results[Math.floor(Math.random() * data.results.length)]
@@ -1461,11 +1461,11 @@ router.get('/api/maker/welcome1', cekKey, async (req, res, next) => {
 	var imgpp = await isImageURL(pp)
 	var bgimg = await isImageURL(bg)
 
-    if (!name ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter name"})  
-	if (!grup ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter gpname"})  
-    if (!member ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter member"})  
-	if (!pp ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter pp"})  
-    if (!bg ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter bg"})  
+    if (!name ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter name"})  
+	if (!grup ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter gpname"})  
+    if (!member ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter member"})  
+	if (!pp ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter pp"})  
+    if (!bg ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter bg"})  
 
 	if ( !imgpp ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image pp"}) 
 	if ( !bgimg ) return res.json({ status : false, creator : 'Alip', message : "[!] cek kembali url image bg"}) 
@@ -1533,14 +1533,14 @@ router.get('/api/maker/goodbye1', cekKey, async (req, res, next) => {
 	var imgpp = await isImageURL(pp)
 	var bgimg = await isImageURL(bg)
 
-    if (!name ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter name"})  
-	if (!grup ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter gpname"})  
-    if (!member ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter member"})  
-    if (!bg ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter bg"})  
-	if (!pp) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter pp"}) 
+    if (!name ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter name"})  
+	if (!grup ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter gpname"})  
+    if (!member ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter member"})  
+    if (!bg ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter bg"})  
+	if (!pp) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter pp"}) 
    
-	if ( !imgpp ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter pp Link pp dengan betul"}) 
-	if ( !bgimg ) return res.json({ status : false, creator : 'Alip', message : "[!] masukan parameter pp Link bg dengan betul"}) 
+	if ( !imgpp ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter pp Link pp dengan benar"}) 
+	if ( !bgimg ) return res.json({ status : false, creator : 'Alip', message : "[!] harap input parameter pp Link bg dengan benar"}) 
 
     Canvas.registerFont('./asset/font/Creme.ttf', { family: 'creme' })
 
@@ -1598,10 +1598,10 @@ can.context.drawImage(bg, 320, 0, 709, 360)
 
 router.get('/api/linkshort/tinyurl', cekKey, async (req, res, next) => {
 	var link = req.query.link
-	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter link"})  
+	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter link"})  
 
     var islink = isUrl(link)
-	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url sahaja"})  
+	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url saja"})  
 
 
 TinyURL.shorten(link, function(link, err) {
@@ -1619,11 +1619,11 @@ TinyURL.shorten(link, function(link, err) {
 router.get('/api/linkshort/tinyurlwithalias', cekKey, async (req, res, next) => {
 	var link = req.query.link
 	var alias = req.query.alias
-	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter link"})  
-	if (!alias ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter alias"})  
+	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter link"})  
+	if (!alias ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter alias"})  
 
     var islink = isUrl(link)
-	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url sahaja"})  
+	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url saja"})  
 
 	const data = { 'url': link, 'alias': shortText(alias, 30) }
 
@@ -1640,9 +1640,9 @@ router.get('/api/linkshort/tinyurlwithalias', cekKey, async (req, res, next) => 
 	
 router.get('/api/linkshort/cuttly', cekKey, async (req, res, next) => {
 	var link = req.query.link
-	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter link"})  
+	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter link"})  
     var islink = isUrl(link)
-	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url sahaja"})  
+	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url saja"})  
 
 	let randomapicuttly = apicuttly[Math.floor(Math.random() * apicuttly.length)]
 	var hasil = await fetchJson(`https://cutt.ly/api/api.php?key=${randomapicuttly}&short=${link}`)
@@ -1658,10 +1658,10 @@ router.get('/api/linkshort/cuttly', cekKey, async (req, res, next) => {
 
 router.get('/api/linkshort/bitly', cekKey, async (req, res, next) => {
 	var link = req.query.link
-	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter link"})  
+	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter link"})  
 
 	var islink = isUrl(link)
-	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url sahaja"})  
+	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url saja"})  
 
 	let randomapibitly = apibitly[Math.floor(Math.random() * apibitly.length)]
 	const bitly = new BitlyClient(randomapibitly)
@@ -1686,7 +1686,7 @@ router.get('/api/linkshort/bitly', cekKey, async (req, res, next) => {
 
 router.get('/api/info/githubstalk', cekKey, async (req, res, next) => {
 	var user = req.query.user
-	if (!user ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter user"})  
+	if (!user ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter user"})  
 	let gitstalk = await fetchJson(`https://api.github.com/users/${user}`)
 	if (!gitstalk.login ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -1719,8 +1719,8 @@ router.get('/api/info/translate', cekKey, async (req, res, next) => {
 	var text = req.query.text
     var lang = req.query.lang
 
-	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
-	if (!lang ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter lang.  boleh lihat list bahasa di https://cloud.google.com/translate/docs/languages"})  
+	if (!text ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
+	if (!lang ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter bahasa dengan benar.  silakan cek list bahasa di https://cloud.google.com/translate/docs/languages"})  
 
 	translate(text, {to: lang}).then(data => {
 		limitapikey(req.query.apikey)
@@ -1730,16 +1730,16 @@ router.get('/api/info/translate', cekKey, async (req, res, next) => {
 			result: data
 		})
 	}).catch(err => {
-		res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter lang Dengan Betul.  boleh lihat list bahasa di https://cloud.google.com/translate/docs/languages"})
+		res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter bahasa dengan benar.  silakan cek list bahasa di https://cloud.google.com/translate/docs/languages"})
 	})
         
 })
 
 router.get('/api/info/emoji', cekKey, async (req, res, next) => {
 	var emoji1 = req.query.emoji
-	if (!emoji1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter emoji"})
+	if (!emoji1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter emoji"})
       var hasil = emoji.get(emoji1)
-       if (hasil == null) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter emoji dengan 1 emoji sahaja"})
+       if (hasil == null) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter emoji dengan 1 emoji saja"})
            limitapikey(req.query.apikey)
            res.json({
 			status: true,
@@ -1753,8 +1753,8 @@ router.get('/api/info/emoji', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/ebase64', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
-	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] Maximal 2.048 String!"})
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
+	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] maksimal 2.048 String!"})
 	limitapikey(req.query.apikey)
 
 		res.json({
@@ -1767,8 +1767,8 @@ router.get('/api/tools/ebase64', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/debase64', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
-	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] Maximal 2.048 String!"})
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
+	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] maksimal 2.048 String!"})
 	limitapikey(req.query.apikey)
 
 		res.json({
@@ -1781,8 +1781,8 @@ router.get('/api/tools/debase64', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/ebinary', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
-	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] Maximal 2.048 String!"})
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
+	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] maksimal 2.048 String!"})
 
 	function encodeBinary(char) {
 		return char.split("").map(str => {
@@ -1801,8 +1801,8 @@ router.get('/api/tools/ebinary', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/debinary', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
-	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] Maximal 2.048 String!"})
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
+	if (text1.length > 2048) return res.json({ status : false, creator : `${creator}`, message : "[!] maksimal 2.048 String!"})
 
 	function decodeBinary(char) {
 		return char.split(" ").map(str => String.fromCharCode(Number.parseInt(str, 2))).join("");
@@ -1819,10 +1819,10 @@ router.get('/api/tools/debinary', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/ssweb', cekKey, async (req, res, next) => {
 	var link = req.query.link
-	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter link"})  
+	if (!link ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter link"})  
 
 	var islink = isUrl(link)
-	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter url sahaja"})  
+	if (!islink ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter url saja"})  
 
 
 	alip.ssweb(link).then((data) =>{ 
@@ -1839,7 +1839,7 @@ router.get('/api/tools/ssweb', cekKey, async (req, res, next) => {
 
 router.get('/api/tools/styletext', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text "}) 
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text "}) 
 	var text = shortText(text1, 10000)  
 	alip.styletext(text)
 .then((data) =>{ 
@@ -1863,7 +1863,7 @@ router.get('/api/tools/styletext', cekKey, async (req, res, next) => {
 
 router.get('/api/islamic/surah', cekKey, async (req, res, next) => {
 	var text1 = req.query.no
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter no"})  
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter no"})  
 	alip.surah(text1).then((data) =>{ 
 	if (!data ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
@@ -1881,7 +1881,7 @@ router.get('/api/islamic/surah', cekKey, async (req, res, next) => {
 
 router.get('/api/islamic/tafsirsurah', cekKey, async (req, res, next) => {
 	var text1 = req.query.text
-	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] masukan parameter text"})  
+	if (!text1 ) return res.json({ status : false, creator : `${creator}`, message : "[!] harap input parameter text"})  
 	alip.tafsirsurah(text1).then((data) =>{ 
 	if (!data[0] ) return res.json(loghandler.notfound)
 	limitapikey(req.query.apikey)
