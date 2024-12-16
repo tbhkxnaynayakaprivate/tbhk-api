@@ -19,9 +19,9 @@ require('dotenv').config()
 
 //_______________________ ┏  Main Setting  ┓ _______________________\\
 
-creator = '乂𝘼𝙡𝙞𝙥乂' // Nama 
+creator = '乂 TBHK OFFC 乂' // Nama 
 port = 8080 //port host
-LimitApikey = 200 // Limit Apikey default
+LimitApikey = 50 // Limit Apikey default
 
 //___________ ┏  Database Mongodb Setting  ┓ ___________\\
 
@@ -94,7 +94,7 @@ loghandler = {
     instgram: {
 	    status: false,
 	    code: 403,
-	    message: '[!] Forbiden or Error, Username tidak wujud atau account private',
+	    message: '[!] Forbiden or Error, Username tidak valid atau akun di private',
 	    maintanied_by: `${creator}`
    },
     register: {
