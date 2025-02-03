@@ -8,8 +8,8 @@
   ],
   "routes": [
     {
-      "public": "/(.*)",
-      "dest": "/index.js"
+      "src": "/(.*)",
+      "dest": "./index.js"
     }
   ],
   "env": {
